@@ -3,7 +3,7 @@ import Config
 # Configure your database
 config :exstreamer, Exstreamer.Repo,
   username: "postgres",
-  password: "postgres",
+  password: "mysecretpassword",
   hostname: "localhost",
   database: "exstreamer_dev",
   stacktrace: true,
