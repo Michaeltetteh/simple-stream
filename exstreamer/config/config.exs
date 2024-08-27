@@ -20,7 +20,7 @@ config :exstreamer, ExstreamerWeb.Endpoint,
     layout: false
   ],
   pubsub_server: Exstreamer.PubSub,
-  live_view: [signing_salt: "Fl38Pd6L"]
+  live_view: [signing_salt: "xIq4KLGW"]
 
 # Configures the mailer
 #
@@ -41,15 +41,11 @@ config :esbuild,
     env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
   ]
 
-# Configure tailwind (the version is required)
-config :tailwind,
-  version: "3.4.3",
-  exstreamer: [
-    args: ~w(
-      --config=tailwind.config.js
-      --input=css/app.css
-      --output=../priv/static/assets/app.css
-    ),
+#configure to use bootstrap
+config :dart_sass,
+  version: "1.77.8",
+  default: [
+    args: ~w(css/app.scss ../priv/static/assets/app.css),
     cd: Path.expand("../assets", __DIR__)
   ]
 

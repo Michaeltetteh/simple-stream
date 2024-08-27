@@ -17,7 +17,7 @@ config :exstreamer, Exstreamer.Repo,
 # you can enable the server option below.
 config :exstreamer, ExstreamerWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
-  secret_key_base: "UCVk8GxRnb2aD1sme/wGHDG8SscrM5g7d/BSRn5Jf2ZDz6mmM+4Cyb8uNGzXVORo",
+  secret_key_base: "WLDLOba7JNfdjpOASIw/uEWzXP9NXrrtdWL7kFAUS6gsUq5UCG7wvPOfI4bYSENK",
   server: false
 
 # In test we don't send emails
