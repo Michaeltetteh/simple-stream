@@ -13,6 +13,8 @@
 # priv/repo/seeds.exs
 
 alias Exstreamer.Categories
+alias Exstreamer.Categories.Category
+
 
 categories = [ "Comedy", "Action", "Drama", "Horror", "Sci-Fi", "Documentary" ]
 
