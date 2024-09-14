@@ -12,16 +12,16 @@
 
 # priv/repo/seeds.exs
 
-alias Exstreamer.MediaCatalog
-# alias Exstreamer.MediaCatalog.Category
+# alias Exstreamer.MediaCatalog
+alias Exstreamer.Category
 
 categories = [ "Comedy", "Action", "Drama", "Horror", "Sci-Fi", "Documentary" ]
 
 categories
 |> Enum.each(fn category ->
-  case MediaCatalog.get_category_by_name(category) do
+  case Category.get_category_by_name(category) do
     nil -> 
-      case MediaCatalog.create_category(%{name: category}) do
+      case Category.create_category(%{name: category}) do
         {:ok, _category} -> IO.puts("Inserted '#{category}'")
         {:error, changeset} -> IO.puts("Failed to insert '#{category}': #{inspect(changeset.errors)}")
       end

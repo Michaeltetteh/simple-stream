@@ -5,20 +5,16 @@ defmodule Exstreamer.MediaCatalogFixtures do
   """
 
   @doc """
-  Generate a catalog.
+  Generate a movie.
   """
-  def catalog_fixture(attrs \\ %{}) do
-    {:ok, catalog} =
+  def movie_fixture(attrs \\ %{}) do
+    {:ok, movie} =
       attrs
       |> Enum.into(%{
-        categories: "some categories",
-        description: "some description",
-        is_tv_show: true,
-        rating: "120.5",
-        title: "some title"
-      })
-      |> Exstreamer.MediaCatalog.create_catalog()
 
-    catalog
+      })
+      |> Exstreamer.MediaCatalog.create_movie()
+
+    movie
   end
 end

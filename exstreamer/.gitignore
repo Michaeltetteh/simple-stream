@@ -35,3 +35,5 @@ exstreamer-*.tar
 npm-debug.log
 /assets/node_modules/
 
+bk_*
+
