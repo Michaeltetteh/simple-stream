@@ -34,4 +34,18 @@ defmodule Exstreamer.MediaCatalogFixtures do
 
     media_file
   end
+
+  @doc """
+  Generate a tv_show.
+  """
+  def tv_show_fixture(attrs \\ %{}) do
+    {:ok, tv_show} =
+      attrs
+      |> Enum.into(%{
+
+      })
+      |> Exstreamer.MediaCatalog.create_tv_show()
+
+    tv_show
+  end
 end

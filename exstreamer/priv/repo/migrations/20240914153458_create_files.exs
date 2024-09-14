@@ -10,5 +10,7 @@ defmodule Exstreamer.Repo.Migrations.CreateFiles do
 
       timestamps(type: :utc_datetime)
     end
+    
+    create unique_index(:files, [:name])
   end
 end
