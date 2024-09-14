@@ -9,6 +9,7 @@ defmodule Exstreamer.Repo.Migrations.CreateMovies do
       add :poster, :string, null: false
 
       add :uploaded_by, references(:users, on_delete: :delete_all)
+      add :file_id, references(:files, on_delete: :delete_all)
 
       timestamps(type: :utc_datetime)
     end
