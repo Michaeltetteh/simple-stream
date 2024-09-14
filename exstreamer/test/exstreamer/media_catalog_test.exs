@@ -3,65 +3,55 @@ defmodule Exstreamer.MediaCatalogTest do
 
   alias Exstreamer.MediaCatalog
 
-  describe "catalogs" do
-    alias Exstreamer.MediaCatalog.Catalog
+  describe "movies" do
+    alias Exstreamer.MediaCatalog.Movie
 
     import Exstreamer.MediaCatalogFixtures
 
-    @invalid_attrs %{description: nil, title: nil, categories: nil, rating: nil, is_tv_show: nil}
+    @invalid_attrs %{}
 
-    test "list_catalogs/0 returns all catalogs" do
-      catalog = catalog_fixture()
-      assert MediaCatalog.list_catalogs() == [catalog]
+    test "list_movies/0 returns all movies" do
+      movie = movie_fixture()
+      assert MediaCatalog.list_movies() == [movie]
     end
 
-    test "get_catalog!/1 returns the catalog with given id" do
-      catalog = catalog_fixture()
-      assert MediaCatalog.get_catalog!(catalog.id) == catalog
+    test "get_movie!/1 returns the movie with given id" do
+      movie = movie_fixture()
+      assert MediaCatalog.get_movie!(movie.id) == movie
     end
 
-    test "create_catalog/1 with valid data creates a catalog" do
-      valid_attrs = %{description: "some description", title: "some title", categories: "some categories", rating: "120.5", is_tv_show: true}
+    test "create_movie/1 with valid data creates a movie" do
+      valid_attrs = %{}
 
-      assert {:ok, %Catalog{} = catalog} = MediaCatalog.create_catalog(valid_attrs)
-      assert catalog.description == "some description"
-      assert catalog.title == "some title"
-      assert catalog.categories == "some categories"
-      assert catalog.rating == Decimal.new("120.5")
-      assert catalog.is_tv_show == true
+      assert {:ok, %Movie{} = movie} = MediaCatalog.create_movie(valid_attrs)
     end
 
-    test "create_catalog/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = MediaCatalog.create_catalog(@invalid_attrs)
+    test "create_movie/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = MediaCatalog.create_movie(@invalid_attrs)
     end
 
-    test "update_catalog/2 with valid data updates the catalog" do
-      catalog = catalog_fixture()
-      update_attrs = %{description: "some updated description", title: "some updated title", categories: "some updated categories", rating: "456.7", is_tv_show: false}
+    test "update_movie/2 with valid data updates the movie" do
+      movie = movie_fixture()
+      update_attrs = %{}
 
-      assert {:ok, %Catalog{} = catalog} = MediaCatalog.update_catalog(catalog, update_attrs)
-      assert catalog.description == "some updated description"
-      assert catalog.title == "some updated title"
-      assert catalog.categories == "some updated categories"
-      assert catalog.rating == Decimal.new("456.7")
-      assert catalog.is_tv_show == false
+      assert {:ok, %Movie{} = movie} = MediaCatalog.update_movie(movie, update_attrs)
     end
 
-    test "update_catalog/2 with invalid data returns error changeset" do
-      catalog = catalog_fixture()
-      assert {:error, %Ecto.Changeset{}} = MediaCatalog.update_catalog(catalog, @invalid_attrs)
-      assert catalog == MediaCatalog.get_catalog!(catalog.id)
+    test "update_movie/2 with invalid data returns error changeset" do
+      movie = movie_fixture()
+      assert {:error, %Ecto.Changeset{}} = MediaCatalog.update_movie(movie, @invalid_attrs)
+      assert movie == MediaCatalog.get_movie!(movie.id)
     end
 
-    test "delete_catalog/1 deletes the catalog" do
-      catalog = catalog_fixture()
-      assert {:ok, %Catalog{}} = MediaCatalog.delete_catalog(catalog)
-      assert_raise Ecto.NoResultsError, fn -> MediaCatalog.get_catalog!(catalog.id) end
+    test "delete_movie/1 deletes the movie" do
+      movie = movie_fixture()
+      assert {:ok, %Movie{}} = MediaCatalog.delete_movie(movie)
+      assert_raise Ecto.NoResultsError, fn -> MediaCatalog.get_movie!(movie.id) end
     end
 
-    test "change_catalog/1 returns a catalog changeset" do
-      catalog = catalog_fixture()
-      assert %Ecto.Changeset{} = MediaCatalog.change_catalog(catalog)
+    test "change_movie/1 returns a movie changeset" do
+      movie = movie_fixture()
+      assert %Ecto.Changeset{} = MediaCatalog.change_movie(movie)
     end
   end
 end
