@@ -9,3 +9,24 @@
 #
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
+
+# priv/repo/seeds.exs
+
+alias Exstreamer.Categories
+
+categories = [ "Comedy", "Action", "Drama", "Horror", "Sci-Fi", "Documentary" ]
+
+categories
+|> Enum.each(fn category ->
+  case Categories.get_category_by_name(category) do
+    nil -> 
+      case Categories.create_category(%{name: category}) do
+        {:ok, _category} -> IO.puts("Inserted '#{category}'")
+        {:error, changeset} -> IO.puts("Failed to insert '#{category}': #{inspect(changeset.errors)}")
+      end
+    _existing -> 
+      IO.puts("Category '#{category}' already exists.")
+  end
+end)
+
+IO.puts("Categories have been seeded.")
