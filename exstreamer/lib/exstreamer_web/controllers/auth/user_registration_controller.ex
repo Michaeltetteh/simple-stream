@@ -16,7 +16,7 @@ defmodule ExstreamerWeb.UserRegistrationController do
         {:ok, _} =
           Accounts.deliver_user_confirmation_instructions(
             user,
-            &url(~p"/users/confirm/#{&1}")
+            &url(~p"/admin/users/confirm/#{&1}")
           )
 
         conn

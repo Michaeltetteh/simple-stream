@@ -5,15 +5,15 @@ defmodule ExstreamerWeb.UserRegistrationControllerTest do
 
   describe "GET /users/register" do
     test "renders registration page", %{conn: conn} do
-      conn = get(conn, ~p"/users/register")
+      conn = get(conn, ~p"/admin/users/register")
       response = html_response(conn, 200)
       assert response =~ "Register"
-      assert response =~ ~p"/users/log_in"
-      assert response =~ ~p"/users/register"
+      assert response =~ ~p"/admin/users/log_in"
+      assert response =~ ~p"/admin/users/register"
     end
 
     test "redirects if already logged in", %{conn: conn} do
-      conn = conn |> log_in_user(user_fixture()) |> get(~p"/users/register")
+      conn = conn |> log_in_user(user_fixture()) |> get(~p"/admin/users/register")
 
       assert redirected_to(conn) == ~p"/"
     end
@@ -25,7 +25,7 @@ defmodule ExstreamerWeb.UserRegistrationControllerTest do
       email = unique_user_email()
 
       conn =
-        post(conn, ~p"/users/register", %{
+        post(conn, ~p"/admin/users/register", %{
           "user" => valid_user_attributes(email: email)
         })
 
@@ -36,13 +36,13 @@ defmodule ExstreamerWeb.UserRegistrationControllerTest do
       conn = get(conn, ~p"/")
       response = html_response(conn, 200)
       assert response =~ email
-      assert response =~ ~p"/users/settings"
-      assert response =~ ~p"/users/log_out"
+      assert response =~ ~p"/admin/users/settings"
+      assert response =~ ~p"/admin/users/log_out"
     end
 
     test "render errors for invalid data", %{conn: conn} do
       conn =
-        post(conn, ~p"/users/register", %{
+        post(conn, ~p"/admin/users/register", %{
           "user" => %{"email" => "with spaces", "password" => "too short"}
         })
 
