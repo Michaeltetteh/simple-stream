@@ -9,15 +9,15 @@ defmodule ExstreamerWeb.UserSessionControllerTest do
 
   describe "GET /users/log_in" do
     test "renders log in page", %{conn: conn} do
-      conn = get(conn, ~p"/users/log_in")
+      conn = get(conn, ~p"/admin/users/log_in")
       response = html_response(conn, 200)
       assert response =~ "Log in"
-      assert response =~ ~p"/users/register"
+      assert response =~ ~p"/admin/users/register"
       assert response =~ "Forgot your password?"
     end
 
     test "redirects if already logged in", %{conn: conn, user: user} do
-      conn = conn |> log_in_user(user) |> get(~p"/users/log_in")
+      conn = conn |> log_in_user(user) |> get(~p"/admin/users/log_in")
       assert redirected_to(conn) == ~p"/"
     end
   end
@@ -25,7 +25,7 @@ defmodule ExstreamerWeb.UserSessionControllerTest do
   describe "POST /users/log_in" do
     test "logs the user in", %{conn: conn, user: user} do
       conn =
-        post(conn, ~p"/users/log_in", %{
+        post(conn, ~p"/admin/users/log_in", %{
           "user" => %{"email" => user.email, "password" => valid_user_password()}
         })
 
@@ -36,13 +36,13 @@ defmodule ExstreamerWeb.UserSessionControllerTest do
       conn = get(conn, ~p"/")
       response = html_response(conn, 200)
       assert response =~ user.email
-      assert response =~ ~p"/users/settings"
-      assert response =~ ~p"/users/log_out"
+      assert response =~ ~p"/admin/users/settings"
+      assert response =~ ~p"/admin/users/log_out"
     end
 
     test "logs the user in with remember me", %{conn: conn, user: user} do
       conn =
-        post(conn, ~p"/users/log_in", %{
+        post(conn, ~p"/admin/users/log_in", %{
           "user" => %{
             "email" => user.email,
             "password" => valid_user_password(),
@@ -58,7 +58,7 @@ defmodule ExstreamerWeb.UserSessionControllerTest do
       conn =
         conn
         |> init_test_session(user_return_to: "/foo/bar")
-        |> post(~p"/users/log_in", %{
+        |> post(~p"/admin/users/log_in", %{
           "user" => %{
             "email" => user.email,
             "password" => valid_user_password()
@@ -71,7 +71,7 @@ defmodule ExstreamerWeb.UserSessionControllerTest do
 
     test "emits error message with invalid credentials", %{conn: conn, user: user} do
       conn =
-        post(conn, ~p"/users/log_in", %{
+        post(conn, ~p"/admin/users/log_in", %{
           "user" => %{"email" => user.email, "password" => "invalid_password"}
         })
 
@@ -83,14 +83,14 @@ defmodule ExstreamerWeb.UserSessionControllerTest do
 
   describe "DELETE /users/log_out" do
     test "logs the user out", %{conn: conn, user: user} do
-      conn = conn |> log_in_user(user) |> delete(~p"/users/log_out")
+      conn = conn |> log_in_user(user) |> delete(~p"/admin/users/log_out")
       assert redirected_to(conn) == ~p"/"
       refute get_session(conn, :user_token)
       assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "Logged out successfully"
     end
 
     test "succeeds even if the user is not logged in", %{conn: conn} do
-      conn = delete(conn, ~p"/users/log_out")
+      conn = delete(conn, ~p"/admin/users/log_out")
       assert redirected_to(conn) == ~p"/"
       refute get_session(conn, :user_token)
       assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "Logged out successfully"
