@@ -114,4 +114,56 @@ defmodule Exstreamer.MediaCatalogTest do
       assert %Ecto.Changeset{} = MediaCatalog.change_media_file(media_file)
     end
   end
+
+  describe "tvshows" do
+    alias Exstreamer.MediaCatalog.TVShow
+
+    import Exstreamer.MediaCatalogFixtures
+
+    @invalid_attrs %{}
+
+    test "list_tvshows/0 returns all tvshows" do
+      tv_show = tv_show_fixture()
+      assert MediaCatalog.list_tvshows() == [tv_show]
+    end
+
+    test "get_tv_show!/1 returns the tv_show with given id" do
+      tv_show = tv_show_fixture()
+      assert MediaCatalog.get_tv_show!(tv_show.id) == tv_show
+    end
+
+    test "create_tv_show/1 with valid data creates a tv_show" do
+      valid_attrs = %{}
+
+      assert {:ok, %TVShow{} = tv_show} = MediaCatalog.create_tv_show(valid_attrs)
+    end
+
+    test "create_tv_show/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = MediaCatalog.create_tv_show(@invalid_attrs)
+    end
+
+    test "update_tv_show/2 with valid data updates the tv_show" do
+      tv_show = tv_show_fixture()
+      update_attrs = %{}
+
+      assert {:ok, %TVShow{} = tv_show} = MediaCatalog.update_tv_show(tv_show, update_attrs)
+    end
+
+    test "update_tv_show/2 with invalid data returns error changeset" do
+      tv_show = tv_show_fixture()
+      assert {:error, %Ecto.Changeset{}} = MediaCatalog.update_tv_show(tv_show, @invalid_attrs)
+      assert tv_show == MediaCatalog.get_tv_show!(tv_show.id)
+    end
+
+    test "delete_tv_show/1 deletes the tv_show" do
+      tv_show = tv_show_fixture()
+      assert {:ok, %TVShow{}} = MediaCatalog.delete_tv_show(tv_show)
+      assert_raise Ecto.NoResultsError, fn -> MediaCatalog.get_tv_show!(tv_show.id) end
+    end
+
+    test "change_tv_show/1 returns a tv_show changeset" do
+      tv_show = tv_show_fixture()
+      assert %Ecto.Changeset{} = MediaCatalog.change_tv_show(tv_show)
+    end
+  end
 end

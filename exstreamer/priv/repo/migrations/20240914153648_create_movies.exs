@@ -13,5 +13,8 @@ defmodule Exstreamer.Repo.Migrations.CreateMovies do
 
       timestamps(type: :utc_datetime)
     end
+
+    create index(:movies, [:file_id, :uploaded_by])
+    create unique_index(:movies, [:file_id])
   end
 end
