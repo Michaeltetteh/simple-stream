@@ -7,7 +7,7 @@ defmodule ExstreamerWeb.Endpoint do
   @session_options [
     store: :cookie,
     key: "_exstreamer_key",
-    signing_salt: "MfLfKG4P",
+    signing_salt: "wNGFd1mR",
     same_site: "Lax"
   ]
 

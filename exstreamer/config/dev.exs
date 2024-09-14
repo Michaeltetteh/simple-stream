@@ -23,14 +23,10 @@ config :exstreamer, ExstreamerWeb.Endpoint,
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
-  secret_key_base: "aj+JOXi5i+aX3zt3AXg/B/hOvA8TRPaE+2aRHZmdKq14loRyqt81c1udySErrnHg",
+  secret_key_base: "XyaDK32sK1OrrkT5waWJpKAuCSUWpzKO6GRL9sjEwWmvdTH8GX7a9h2lIN1r/U4R",
   watchers: [
     esbuild: {Esbuild, :install_and_run, [:exstreamer, ~w(--sourcemap=inline --watch)]},
-    sass: {
-        DartSass,
-        :install_and_run,
-        [:default, ~w(--embed-source-map --source-map-urls=absolute --watch)]
-      }
+    tailwind: {Tailwind, :install_and_run, [:exstreamer, ~w(--watch)]}
   ]
 
 # ## SSL Support

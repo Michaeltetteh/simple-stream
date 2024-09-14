@@ -44,6 +44,14 @@ defmodule Exstreamer.MixProject do
       {:floki, ">= 0.30.0", only: :test},
       {:phoenix_live_dashboard, "~> 0.8.3"},
       {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},
+      {:tailwind, "~> 0.2", runtime: Mix.env() == :dev},
+      {:heroicons,
+       github: "tailwindlabs/heroicons",
+       tag: "v2.1.1",
+       sparse: "optimized",
+       app: false,
+       compile: false,
+       depth: 1},
       {:swoosh, "~> 1.5"},
       {:finch, "~> 0.13"},
       {:telemetry_metrics, "~> 1.0"},
@@ -51,8 +59,7 @@ defmodule Exstreamer.MixProject do
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
-      {:bandit, "~> 1.5"},
-      {:dart_sass, "~> 0.7", runtime: Mix.env() == :dev}
+      {:bandit, "~> 1.5"}
     ]
   end
 
@@ -68,11 +75,11 @@ defmodule Exstreamer.MixProject do
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
-      "assets.setup": ["esbuild.install --if-missing"],
-      "assets.build": ["esbuild exstreamer"],
+      "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
+      "assets.build": ["tailwind exstreamer", "esbuild exstreamer"],
       "assets.deploy": [
-        "esbuild default --minify",
-        "sass default --no-source-map --style=compressed",
+        "tailwind exstreamer --minify",
+        "esbuild exstreamer --minify",
         "phx.digest"
       ]
     ]
