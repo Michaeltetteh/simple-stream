@@ -1,4 +1,4 @@
-defmodule Exstreamer.Categories.Category do
+defmodule Exstreamer.MediaCatalog.Category do
   use Ecto.Schema
   import Ecto.Changeset
 
