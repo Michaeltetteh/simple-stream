@@ -35,5 +35,8 @@ exstreamer-*.tar
 npm-debug.log
 /assets/node_modules/
 
+# Uploaded media files — kept out of version control (can be large)
+/priv/uploads/
+
 bk_*
 
