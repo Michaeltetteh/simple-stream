@@ -1,299 +1,255 @@
 defmodule Exstreamer.MediaCatalog do
   @moduledoc """
-  The MediaCatalog context.
+  The MediaCatalog context — manages Movies, TV Series, Seasons, Episodes,
+  Files, and Categories.
   """
 
   import Ecto.Query, warn: false
   alias Exstreamer.Repo
 
-  alias Exstreamer.MediaCatalog.Movie
+  alias Exstreamer.MediaCatalog.{Movie, MediaFile, TVSeries, TVShow, Episode, Category}
 
-  @doc """
-  Returns the list of movies.
+  # ---------------------------------------------------------------------------
+  # Movies
+  # ---------------------------------------------------------------------------
 
-  ## Examples
-
-      iex> list_movies()
-      [%Movie{}, ...]
-
-  """
   def list_movies do
-    Repo.all(Movie)
+    Movie
+    |> order_by([m], desc: m.inserted_at)
+    |> Repo.all()
+    |> Repo.preload([:categories, :file])
   end
 
-  @doc """
-  Gets a single movie.
+  def list_movies_by_category(category_id) do
+    Movie
+    |> join(:inner, [m], c in assoc(m, :categories), on: c.id == ^category_id)
+    |> order_by([m], desc: m.inserted_at)
+    |> Repo.all()
+    |> Repo.preload([:categories, :file])
+  end
 
-  Raises `Ecto.NoResultsError` if the Movie does not exist.
+  def search_movies(query) do
+    term = "%#{query}%"
 
-  ## Examples
+    Movie
+    |> where([m], ilike(m.title, ^term) or ilike(m.description, ^term))
+    |> order_by([m], asc: m.title)
+    |> Repo.all()
+    |> Repo.preload([:categories, :file])
+  end
 
-      iex> get_movie!(123)
-      %Movie{}
+  def get_movie!(id) do
+    Movie
+    |> Repo.get!(id)
+    |> Repo.preload([:categories, :file])
+  end
 
-      iex> get_movie!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_movie!(id), do: Repo.get!(Movie, id)
-
-  @doc """
-  Creates a movie.
-
-  ## Examples
-
-      iex> create_movie(%{field: value})
-      {:ok, %Movie{}}
-
-      iex> create_movie(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
   def create_movie(attrs \\ %{}) do
     %Movie{}
     |> Movie.changeset(attrs)
     |> Repo.insert()
   end
 
-  @doc """
-  Updates a movie.
+  def create_movie_with_categories(attrs, category_ids) do
+    categories = Repo.all(from c in Category, where: c.id in ^category_ids)
 
-  ## Examples
+    %Movie{}
+    |> Movie.changeset(attrs)
+    |> Ecto.Changeset.put_assoc(:categories, categories)
+    |> Repo.insert()
+  end
 
-      iex> update_movie(movie, %{field: new_value})
-      {:ok, %Movie{}}
-
-      iex> update_movie(movie, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
   def update_movie(%Movie{} = movie, attrs) do
     movie
     |> Movie.changeset(attrs)
     |> Repo.update()
   end
 
-  @doc """
-  Deletes a movie.
+  def update_movie_with_categories(%Movie{} = movie, attrs, category_ids) do
+    categories = Repo.all(from c in Category, where: c.id in ^category_ids)
+    movie = Repo.preload(movie, :categories)
 
-  ## Examples
-
-      iex> delete_movie(movie)
-      {:ok, %Movie{}}
-
-      iex> delete_movie(movie)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_movie(%Movie{} = movie) do
-    Repo.delete(movie)
+    movie
+    |> Movie.changeset(attrs)
+    |> Ecto.Changeset.put_assoc(:categories, categories)
+    |> Repo.update()
   end
 
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking movie changes.
+  def delete_movie(%Movie{} = movie), do: Repo.delete(movie)
 
-  ## Examples
-
-      iex> change_movie(movie)
-      %Ecto.Changeset{data: %Movie{}}
-
-  """
   def change_movie(%Movie{} = movie, attrs \\ %{}) do
     Movie.changeset(movie, attrs)
   end
 
+  # ---------------------------------------------------------------------------
+  # TV Series (parent show grouping seasons)
+  # ---------------------------------------------------------------------------
 
-
-  alias Exstreamer.MediaCatalog.MediaFile
-
-  @doc """
-  Returns the list of files.
-
-  ## Examples
-
-      iex> list_files()
-      [%MediaFile{}, ...]
-
-  """
-  def list_files do
-    Repo.all(MediaFile)
+  def list_tv_series do
+    TVSeries
+    |> order_by([s], desc: s.inserted_at)
+    |> Repo.all()
+    |> Repo.preload([:categories, :seasons])
   end
 
-  @doc """
-  Gets a single media_file.
+  def search_tv_series(query) do
+    term = "%#{query}%"
 
-  Raises `Ecto.NoResultsError` if the Media file does not exist.
+    TVSeries
+    |> where([s], ilike(s.title, ^term) or ilike(s.description, ^term))
+    |> order_by([s], asc: s.title)
+    |> Repo.all()
+    |> Repo.preload([:categories])
+  end
 
-  ## Examples
+  def get_tv_series!(id) do
+    TVSeries
+    |> Repo.get!(id)
+    |> Repo.preload([:categories, seasons: {from(s in TVShow, order_by: s.season_no), [episodes: {from(e in Episode, order_by: e.number), :file}]}])
+  end
 
-      iex> get_media_file!(123)
-      %MediaFile{}
-
-      iex> get_media_file!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_media_file!(id), do: Repo.get!(MediaFile, id)
-
-  @doc """
-  Creates a media_file.
-
-  ## Examples
-
-      iex> create_media_file(%{field: value})
-      {:ok, %MediaFile{}}
-
-      iex> create_media_file(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_media_file(attrs \\ %{}) do
-    %MediaFile{}
-    |> MediaFile.changeset(attrs)
+  def create_tv_series(attrs \\ %{}) do
+    %TVSeries{}
+    |> TVSeries.changeset(attrs)
     |> Repo.insert()
   end
 
-  @doc """
-  Updates a media_file.
+  def create_tv_series_with_categories(attrs, category_ids) do
+    categories = Repo.all(from c in Category, where: c.id in ^category_ids)
 
-  ## Examples
+    %TVSeries{}
+    |> TVSeries.changeset(attrs)
+    |> Ecto.Changeset.put_assoc(:categories, categories)
+    |> Repo.insert()
+  end
 
-      iex> update_media_file(media_file, %{field: new_value})
-      {:ok, %MediaFile{}}
-
-      iex> update_media_file(media_file, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_media_file(%MediaFile{} = media_file, attrs) do
-    media_file
-    |> MediaFile.changeset(attrs)
+  def update_tv_series(%TVSeries{} = series, attrs) do
+    series
+    |> TVSeries.changeset(attrs)
     |> Repo.update()
   end
 
-  @doc """
-  Deletes a media_file.
+  def update_tv_series_with_categories(%TVSeries{} = series, attrs, category_ids) do
+    categories = Repo.all(from c in Category, where: c.id in ^category_ids)
+    series = Repo.preload(series, :categories)
 
-  ## Examples
-
-      iex> delete_media_file(media_file)
-      {:ok, %MediaFile{}}
-
-      iex> delete_media_file(media_file)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_media_file(%MediaFile{} = media_file) do
-    Repo.delete(media_file)
+    series
+    |> TVSeries.changeset(attrs)
+    |> Ecto.Changeset.put_assoc(:categories, categories)
+    |> Repo.update()
   end
 
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking media_file changes.
+  def delete_tv_series(%TVSeries{} = series), do: Repo.delete(series)
 
-  ## Examples
-
-      iex> change_media_file(media_file)
-      %Ecto.Changeset{data: %MediaFile{}}
-
-  """
-  def change_media_file(%MediaFile{} = media_file, attrs \\ %{}) do
-    MediaFile.changeset(media_file, attrs)
+  def change_tv_series(%TVSeries{} = series, attrs \\ %{}) do
+    TVSeries.changeset(series, attrs)
   end
 
+  # ---------------------------------------------------------------------------
+  # TV Shows (seasons)
+  # ---------------------------------------------------------------------------
 
-  alias Exstreamer.MediaCatalog.TVShow
-
-  @doc """
-  Returns the list of tvshows.
-
-  ## Examples
-
-      iex> list_tvshows()
-      [%TVShow{}, ...]
-
-  """
   def list_tvshows do
-    Repo.all(TVShow)
+    Repo.all(TVShow) |> Repo.preload([:categories, :episodes])
   end
 
-  @doc """
-  Gets a single tv_show.
+  def list_seasons_for_series(tv_series_id) do
+    TVShow
+    |> where([s], s.tv_series_id == ^tv_series_id)
+    |> order_by([s], asc: s.season_no)
+    |> Repo.all()
+    |> Repo.preload(episodes: from(e in Episode, order_by: e.number))
+  end
 
-  Raises `Ecto.NoResultsError` if the Tv show does not exist.
+  def get_tv_show!(id) do
+    TVShow
+    |> Repo.get!(id)
+    |> Repo.preload([
+      :categories,
+      :tv_series,
+      episodes: {from(e in Episode, order_by: e.number), :file}
+    ])
+  end
 
-  ## Examples
-
-      iex> get_tv_show!(123)
-      %TVShow{}
-
-      iex> get_tv_show!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_tv_show!(id), do: Repo.get!(TVShow, id)
-
-  @doc """
-  Creates a tv_show.
-
-  ## Examples
-
-      iex> create_tv_show(%{field: value})
-      {:ok, %TVShow{}}
-
-      iex> create_tv_show(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
   def create_tv_show(attrs \\ %{}) do
     %TVShow{}
     |> TVShow.changeset(attrs)
     |> Repo.insert()
   end
 
-  @doc """
-  Updates a tv_show.
-
-  ## Examples
-
-      iex> update_tv_show(tv_show, %{field: new_value})
-      {:ok, %TVShow{}}
-
-      iex> update_tv_show(tv_show, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
   def update_tv_show(%TVShow{} = tv_show, attrs) do
     tv_show
     |> TVShow.changeset(attrs)
     |> Repo.update()
   end
 
-  @doc """
-  Deletes a tv_show.
+  def delete_tv_show(%TVShow{} = tv_show), do: Repo.delete(tv_show)
 
-  ## Examples
-
-      iex> delete_tv_show(tv_show)
-      {:ok, %TVShow{}}
-
-      iex> delete_tv_show(tv_show)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_tv_show(%TVShow{} = tv_show) do
-    Repo.delete(tv_show)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking tv_show changes.
-
-  ## Examples
-
-      iex> change_tv_show(tv_show)
-      %Ecto.Changeset{data: %TVShow{}}
-
-  """
   def change_tv_show(%TVShow{} = tv_show, attrs \\ %{}) do
     TVShow.changeset(tv_show, attrs)
+  end
+
+  # ---------------------------------------------------------------------------
+  # Episodes
+  # ---------------------------------------------------------------------------
+
+  def list_episodes_for_season(tvshow_id) do
+    Episode
+    |> where([e], e.tvshow_id == ^tvshow_id)
+    |> order_by([e], asc: e.number)
+    |> Repo.all()
+    |> Repo.preload(:file)
+  end
+
+  def get_episode!(id) do
+    Episode
+    |> Repo.get!(id)
+    |> Repo.preload([:file, tvshow: :tv_series])
+  end
+
+  def create_episode(attrs \\ %{}) do
+    %Episode{}
+    |> Episode.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def update_episode(%Episode{} = episode, attrs) do
+    episode
+    |> Episode.changeset(attrs)
+    |> Repo.update()
+  end
+
+  def delete_episode(%Episode{} = episode), do: Repo.delete(episode)
+
+  def change_episode(%Episode{} = episode, attrs \\ %{}) do
+    Episode.changeset(episode, attrs)
+  end
+
+  # ---------------------------------------------------------------------------
+  # Media Files
+  # ---------------------------------------------------------------------------
+
+  def count_episodes, do: Repo.aggregate(Episode, :count)
+
+  def list_files, do: Repo.all(MediaFile)
+
+  def get_media_file!(id), do: Repo.get!(MediaFile, id)
+
+  def create_media_file(attrs \\ %{}) do
+    %MediaFile{}
+    |> MediaFile.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def update_media_file(%MediaFile{} = media_file, attrs) do
+    media_file
+    |> MediaFile.changeset(attrs)
+    |> Repo.update()
+  end
+
+  def delete_media_file(%MediaFile{} = media_file), do: Repo.delete(media_file)
+
+  def change_media_file(%MediaFile{} = media_file, attrs \\ %{}) do
+    MediaFile.changeset(media_file, attrs)
   end
 end

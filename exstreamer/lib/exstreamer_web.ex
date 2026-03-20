@@ -85,6 +85,7 @@ defmodule ExstreamerWeb do
       import Phoenix.HTML
       # Core UI components and translation
       import ExstreamerWeb.CoreComponents
+      import ExstreamerWeb.StreamingComponents
       import ExstreamerWeb.Gettext
 
       # Shortcut for generating JS commands

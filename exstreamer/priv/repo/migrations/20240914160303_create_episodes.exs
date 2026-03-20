@@ -1,9 +1,6 @@
 defmodule Exstreamer.Repo.Migrations.CreateEpisodes do
   use Ecto.Migration
 
-
-
-
   def change do
     create table(:tvshows) do
       add :title, :string, null: false
@@ -19,7 +16,7 @@ defmodule Exstreamer.Repo.Migrations.CreateEpisodes do
 
     create table(:episodes) do
       add :title, :string
-      add :number, :decimal
+      add :number, :integer
       
       add :file, references(:files, on_delete: :delete_all)
       add :tvshow_id, references(:tvshows)

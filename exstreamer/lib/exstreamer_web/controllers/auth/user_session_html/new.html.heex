@@ -1,31 +1,63 @@
-<div class="mx-auto max-w-sm">
-  <.header class="text-center">
-    Log in to account
-    <:subtitle>
-      Don't have an account?
-      <.link navigate={~p"/admin/users/register"} class="font-semibold text-brand hover:underline">
-        Sign up
-      </.link>
-      for an account now.
-    </:subtitle>
-  </.header>
+<div class="w-full">
+  <h1 class="text-2xl font-black text-white text-center mb-1">Welcome back</h1>
+  <p class="text-sm text-gray-500 text-center mb-8">
+    Sign in to access the admin panel
+  </p>
 
-  <.simple_form :let={f} for={@conn.params["user"]} as={:user} action={~p"/admin/users/log_in"}>
-    <.error :if={@error_message}><%= @error_message %></.error>
+  <%= if @error_message do %>
+    <div class="mb-4 rounded-lg bg-red-500/10 border border-red-500/30 px-4 py-3 text-sm text-red-400">
+      <%= @error_message %>
+    </div>
+  <% end %>
 
-    <.input field={f[:email]} type="email" label="Email" required />
-    <.input field={f[:password]} type="password" label="Password" required />
+  <form action={~p"/admin/users/log_in"} method="post" class="space-y-4">
+    <input type="hidden" name="_csrf_token" value={Plug.CSRFProtection.get_csrf_token()} />
 
-    <:actions :let={f}>
-      <.input field={f[:remember_me]} type="checkbox" label="Keep me logged in" />
-      <.link href={~p"/admin/users/reset_password"} class="text-sm font-semibold">
-        Forgot your password?
-      </.link>
-    </:actions>
-    <:actions>
-      <.button phx-disable-with="Logging in..." class="w-full">
-        Log in <span aria-hidden="true">→</span>
-      </.button>
-    </:actions>
-  </.simple_form>
+    <div>
+      <label for="user_email" class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Email</label>
+      <input
+        type="email"
+        name="user[email]"
+        id="user_email"
+        value={get_in(@conn.params, ["user", "email"]) || ""}
+        required
+        autofocus
+        class="w-full bg-gray-800 border border-gray-700 text-white placeholder-gray-600 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500 transition-colors"
+        placeholder="you@example.com"
+      />
+    </div>
+
+    <div>
+      <div class="flex items-center justify-between mb-1.5">
+        <label for="user_password" class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Password</label>
+        <a href={~p"/admin/users/reset_password"} class="text-xs text-gray-500 hover:text-gray-300 transition-colors">Forgot password?</a>
+      </div>
+      <input
+        type="password"
+        name="user[password]"
+        id="user_password"
+        required
+        class="w-full bg-gray-800 border border-gray-700 text-white placeholder-gray-600 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500 transition-colors"
+        placeholder="••••••••"
+      />
+    </div>
+
+    <div class="flex items-center gap-2 pt-1">
+      <input type="checkbox" name="user[remember_me]" id="user_remember_me"
+             class="w-4 h-4 rounded border-gray-600 bg-gray-800 text-accent focus:ring-0 focus:ring-offset-0" />
+      <label for="user_remember_me" class="text-sm text-gray-400 select-none">Keep me logged in</label>
+    </div>
+
+    <button
+      type="submit"
+      class="w-full bg-accent hover:bg-red-700 text-white font-bold text-sm py-3 rounded-lg transition-colors mt-2"
+    >
+      Sign in →
+    </button>
+  </form>
+
+  <p class="text-center text-sm text-gray-600 mt-6">
+    Don't have an account?
+    <a href={~p"/admin/users/register"} class="text-gray-400 hover:text-white transition-colors font-medium">Create one</a>
+  </p>
 </div>

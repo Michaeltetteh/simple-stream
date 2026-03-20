@@ -2,4 +2,49 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-/* This file is for your main application CSS */
+/* ─── Scrollbar ───────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #141414; }
+::-webkit-scrollbar-thumb { background: #3f3f3f; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #555; }
+
+/* ─── Content rows (horizontal scroll) ───────────────────────── */
+.content-row {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+.content-row::-webkit-scrollbar { display: none; }
+.content-row > * { scroll-snap-align: start; flex-shrink: 0; }
+
+/* ─── Content card hover ──────────────────────────────────────── */
+.content-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.content-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+  z-index: 10;
+}
+.content-card .card-overlay {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.content-card:hover .card-overlay { opacity: 1; }
+
+/* ─── Video player ────────────────────────────────────────────── */
+video { background: #000; }
+
+/* ─── Hero banner ─────────────────────────────────────────────── */
+.hero-banner {
+  background-size: cover;
+  background-position: center top;
+}
+
+/* ─── Admin sidebar active link ───────────────────────────────── */
+.admin-sidebar a.active {
+  background-color: rgba(229, 9, 20, 0.15);
+  color: #E50914;
+}
+

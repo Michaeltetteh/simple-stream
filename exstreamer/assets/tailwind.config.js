@@ -15,7 +15,20 @@ module.exports = {
     extend: {
       colors: {
         brand: "#FD4F00",
-      }
+        accent: "#E50914",
+        "gray-950": "#0a0a0a",
+        "gray-925": "#111111",
+        "gray-900": "#141414",
+        "gray-850": "#1a1a1a",
+      },
+      backgroundImage: {
+        "card-gradient": "linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 50%, transparent 100%)",
+        "hero-gradient": "linear-gradient(to right, rgba(0,0,0,0.85) 40%, transparent 100%)",
+      },
+      aspectRatio: {
+        "2/3": "2 / 3",
+        "16/9": "16 / 9",
+      },
     },
   },
   plugins: [

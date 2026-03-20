@@ -7,6 +7,11 @@
 # General application configuration
 import Config
 
+config :mime, :types, %{
+  "video/x-matroska" => ["mkv"],
+  "video/quicktime" => ["mov"]
+}
+
 config :exstreamer,
   ecto_repos: [Exstreamer.Repo],
   generators: [timestamp_type: :utc_datetime]

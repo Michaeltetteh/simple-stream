@@ -8,11 +8,13 @@ defmodule Exstreamer.MediaCatalog.TVShow do
     field :title, :string
     field :rating, :decimal
     field :poster, :string
+    field :season_no, :integer, default: 1
 
-    many_to_many :categories, Category, join_through: "movie_categories", on_replace: :delete
-    belongs_to :uploaded_by, Exstreamer.Accounts.User
-    
-    has_many :episodes, Exstreamer.MediaCatalog.Episode
+    many_to_many :categories, Category, join_through: "tvshow_categories", on_replace: :delete
+    belongs_to :uploader, Exstreamer.Accounts.User, foreign_key: :uploaded_by
+    belongs_to :tv_series, Exstreamer.MediaCatalog.TVSeries
+
+    has_many :episodes, Exstreamer.MediaCatalog.Episode, foreign_key: :tvshow_id
 
     timestamps(type: :utc_datetime)
   end
@@ -20,8 +22,8 @@ defmodule Exstreamer.MediaCatalog.TVShow do
   @doc false
   def changeset(tv_show, attrs) do
     tv_show
-    |> cast(attrs, [:title, :categories, :rating, :description, :poster])
-    |> validate_required([:title, :categories, :rating, :description, :poster])
+    |> cast(attrs, [:title, :rating, :description, :poster, :season_no, :tv_series_id, :uploaded_by])
+    |> validate_required([:title])
   end
 end
 
