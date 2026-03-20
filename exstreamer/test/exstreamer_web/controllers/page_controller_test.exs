@@ -1,8 +1,8 @@
 defmodule ExstreamerWeb.PageControllerTest do
   use ExstreamerWeb.ConnCase
 
-  test "GET /", %{conn: conn} do
+  test "GET / returns 200 with home content", %{conn: conn} do
     conn = get(conn, ~p"/")
-    assert html_response(conn, 200) =~ "Peace of mind from prototype to production"
+    assert html_response(conn, 200) =~ "EXSTREAMER"
   end
 end

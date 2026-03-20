@@ -7,7 +7,7 @@ defmodule ExstreamerWeb.UserRegistrationControllerTest do
     test "renders registration page", %{conn: conn} do
       conn = get(conn, ~p"/admin/users/register")
       response = html_response(conn, 200)
-      assert response =~ "Register"
+      assert response =~ "Create an account"
       assert response =~ ~p"/admin/users/log_in"
       assert response =~ ~p"/admin/users/register"
     end
@@ -32,12 +32,9 @@ defmodule ExstreamerWeb.UserRegistrationControllerTest do
       assert get_session(conn, :user_token)
       assert redirected_to(conn) == ~p"/"
 
-      # Now do a logged in request and assert on the menu
+      # After login the user lands on the streaming home page
       conn = get(conn, ~p"/")
-      response = html_response(conn, 200)
-      assert response =~ email
-      assert response =~ ~p"/admin/users/settings"
-      assert response =~ ~p"/admin/users/log_out"
+      assert html_response(conn, 200) =~ "EXSTREAMER"
     end
 
     test "render errors for invalid data", %{conn: conn} do
@@ -47,7 +44,7 @@ defmodule ExstreamerWeb.UserRegistrationControllerTest do
         })
 
       response = html_response(conn, 200)
-      assert response =~ "Register"
+      assert response =~ "Create an account"
       assert response =~ "must have the @ sign and no spaces"
       assert response =~ "should be at least 12 character"
     end

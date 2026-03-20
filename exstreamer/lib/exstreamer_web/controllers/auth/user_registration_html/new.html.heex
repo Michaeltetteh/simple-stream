@@ -19,7 +19,7 @@
         type="email"
         name="user[email]"
         id="user_email"
-        value={Phoenix.HTML.Form.input_value(@changeset, :email)}
+        value={Ecto.Changeset.get_field(@changeset, :email) || ""}
         required
         autofocus
         class="w-full bg-gray-800 border border-gray-700 text-white placeholder-gray-600 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500 transition-colors"

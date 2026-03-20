@@ -13,7 +13,7 @@ defmodule Exstreamer.CategoriesFixtures do
       |> Enum.into(%{
         name: "some name"
       })
-      |> Exstreamer.Categories.create_category()
+      |> Exstreamer.Category.create_category()
 
     category
   end

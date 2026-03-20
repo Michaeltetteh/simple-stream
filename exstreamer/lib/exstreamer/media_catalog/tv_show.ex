@@ -10,7 +10,7 @@ defmodule Exstreamer.MediaCatalog.TVShow do
     field :poster, :string
     field :season_no, :integer, default: 1
 
-    many_to_many :categories, Category, join_through: "tvshow_categories", on_replace: :delete
+    many_to_many :categories, Category, join_through: "tvshow_categories", join_keys: [tvshow_id: :id, category_id: :id], on_replace: :delete
     belongs_to :uploader, Exstreamer.Accounts.User, foreign_key: :uploaded_by
     belongs_to :tv_series, Exstreamer.MediaCatalog.TVSeries
 
@@ -26,4 +26,3 @@ defmodule Exstreamer.MediaCatalog.TVShow do
     |> validate_required([:title])
   end
 end
-

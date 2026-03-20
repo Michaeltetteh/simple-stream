@@ -11,11 +11,30 @@ defmodule Exstreamer.MediaCatalogFixtures do
     {:ok, movie} =
       attrs
       |> Enum.into(%{
-
+        title: "some movie #{System.unique_integer([:positive])}",
+        description: "some description",
+        rating: "7.5",
+        poster: "/posters/default.jpg"
       })
       |> Exstreamer.MediaCatalog.create_movie()
 
     movie
+  end
+
+  @doc """
+  Generate a tv_series.
+  """
+  def tv_series_fixture(attrs \\ %{}) do
+    {:ok, series} =
+      attrs
+      |> Enum.into(%{
+        title: "some series #{System.unique_integer([:positive])}",
+        description: "some description",
+        rating: "8.0"
+      })
+      |> Exstreamer.MediaCatalog.create_tv_series()
+
+    series
   end
 
   @doc """
@@ -36,16 +55,37 @@ defmodule Exstreamer.MediaCatalogFixtures do
   end
 
   @doc """
-  Generate a tv_show.
+  Generate a tv_show (season).
   """
   def tv_show_fixture(attrs \\ %{}) do
     {:ok, tv_show} =
       attrs
       |> Enum.into(%{
-
+        title: "Season #{System.unique_integer([:positive])}",
+        description: "Season description",
+        poster: "/posters/season.jpg",
+        season_no: 1
       })
       |> Exstreamer.MediaCatalog.create_tv_show()
 
     tv_show
+  end
+
+  @doc """
+  Generate an episode.
+  """
+  def episode_fixture(attrs \\ %{}) do
+    tv_show = tv_show_fixture()
+
+    {:ok, episode} =
+      attrs
+      |> Enum.into(%{
+        title: "some episode",
+        number: 1,
+        tvshow_id: tv_show.id
+      })
+      |> Exstreamer.MediaCatalog.create_episode()
+
+    episode
   end
 end

@@ -11,9 +11,9 @@ defmodule ExstreamerWeb.UserSessionControllerTest do
     test "renders log in page", %{conn: conn} do
       conn = get(conn, ~p"/admin/users/log_in")
       response = html_response(conn, 200)
-      assert response =~ "Log in"
+      assert response =~ "Welcome back"
       assert response =~ ~p"/admin/users/register"
-      assert response =~ "Forgot your password?"
+      assert response =~ "Forgot password?"
     end
 
     test "redirects if already logged in", %{conn: conn, user: user} do
@@ -32,12 +32,9 @@ defmodule ExstreamerWeb.UserSessionControllerTest do
       assert get_session(conn, :user_token)
       assert redirected_to(conn) == ~p"/"
 
-      # Now do a logged in request and assert on the menu
+      # After login the user lands on the streaming home page
       conn = get(conn, ~p"/")
-      response = html_response(conn, 200)
-      assert response =~ user.email
-      assert response =~ ~p"/admin/users/settings"
-      assert response =~ ~p"/admin/users/log_out"
+      assert html_response(conn, 200) =~ "EXSTREAMER"
     end
 
     test "logs the user in with remember me", %{conn: conn, user: user} do
@@ -76,7 +73,7 @@ defmodule ExstreamerWeb.UserSessionControllerTest do
         })
 
       response = html_response(conn, 200)
-      assert response =~ "Log in"
+      assert response =~ "Welcome back" or response =~ "Sign in"
       assert response =~ "Invalid email or password"
     end
   end

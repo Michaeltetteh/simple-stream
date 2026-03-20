@@ -10,8 +10,8 @@ config :bcrypt_elixir, :log_rounds, 1
 # Run `mix help test` for more information.
 config :exstreamer, Exstreamer.Repo,
   username: "postgres",
-  password: "postgres",
-  hostname: "localhost",
+  password: System.get_env("PGPASSWORD", "mysecretpassword"),
+  hostname: System.get_env("PGHOST", "localhost"),
   database: "exstreamer_test#{System.get_env("MIX_TEST_PARTITION")}",
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: System.schedulers_online() * 2
@@ -23,7 +23,6 @@ config :exstreamer, ExstreamerWeb.Endpoint,
   secret_key_base: "G2InbNSotEDy+9nf5vrz379sbygDCnZZJyAdnapPharX9XSwBBxtL2bHs5sD7c0Y",
   server: false
 
-# In test we don't send emails
 config :exstreamer, Exstreamer.Mailer, adapter: Swoosh.Adapters.Test
 
 # Disable swoosh api client as it is only required for production adapters

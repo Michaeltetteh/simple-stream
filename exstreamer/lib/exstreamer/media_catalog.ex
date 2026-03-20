@@ -105,7 +105,7 @@ defmodule Exstreamer.MediaCatalog do
   def get_tv_series!(id) do
     TVSeries
     |> Repo.get!(id)
-    |> Repo.preload([:categories, seasons: {from(s in TVShow, order_by: s.season_no), [episodes: {from(e in Episode, order_by: e.number), :file}]}])
+    |> Repo.preload([:categories, seasons: {from(s in TVShow, order_by: s.season_no), [episodes: {from(e in Episode, order_by: e.number), :media_file}]}])
   end
 
   def create_tv_series(attrs \\ %{}) do
@@ -167,7 +167,7 @@ defmodule Exstreamer.MediaCatalog do
     |> Repo.preload([
       :categories,
       :tv_series,
-      episodes: {from(e in Episode, order_by: e.number), :file}
+      episodes: {from(e in Episode, order_by: e.number), :media_file}
     ])
   end
 
@@ -198,13 +198,13 @@ defmodule Exstreamer.MediaCatalog do
     |> where([e], e.tvshow_id == ^tvshow_id)
     |> order_by([e], asc: e.number)
     |> Repo.all()
-    |> Repo.preload(:file)
+    |> Repo.preload(:media_file)
   end
 
   def get_episode!(id) do
     Episode
     |> Repo.get!(id)
-    |> Repo.preload([:file, tvshow: :tv_series])
+    |> Repo.preload([:media_file, tvshow: :tv_series])
   end
 
   def create_episode(attrs \\ %{}) do
